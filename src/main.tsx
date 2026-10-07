@@ -8,3 +8,12 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+
+import { Analytics } from '@vercel/analytics/react'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+    <Analytics />
+  </StrictMode>,
+)
