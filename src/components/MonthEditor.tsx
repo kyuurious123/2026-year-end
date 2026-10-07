@@ -37,6 +37,7 @@ export function MonthEditor({
   const fileRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [cutCount, setCutCount] = useState(0)
 
   const pickFile = () => fileRef.current?.click()
 
@@ -70,12 +71,21 @@ export function MonthEditor({
           </div>
           <textarea
             value={data.body}
-            maxLength={LIMITS.bodyMaxChars}
-            onChange={(e) => onChange({ body: e.target.value })}
+            onChange={(e) => {
+              const v = e.target.value
+              // maxLength는 붙여 넣기를 말없이 잘라버려서, 직접 자르고 알려줌
+              setCutCount(Math.max(0, v.length - LIMITS.bodyMaxChars))
+              onChange({ body: v.slice(0, LIMITS.bodyMaxChars) })
+            }}
             rows={7}
             placeholder="비워 두면 이 달은 빈칸으로 나가요."
             className={`${inputClass} resize-y leading-relaxed`}
           />
+          {cutCount > 0 && (
+            <p className="mt-1 text-xs text-red-600">
+              {LIMITS.bodyMaxChars}자까지만 들어가서 뒷부분 {cutCount}자가 잘렸어요.
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-2">
@@ -100,37 +110,50 @@ export function MonthEditor({
           </label>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <span className="mb-1 block text-xs text-neutral-500">본문 폭</span>
-            <NumberField
-              label="W"
-              value={data.bodyWidth}
+        <div>
+          <span className="mb-1 block text-xs text-neutral-500">본문 폭</span>
+          <div className="flex items-center gap-3">
+            <input
+              type="range"
               min={LIMITS.bodyWidthMin}
               max={LIMITS.bodyWidthMax}
-              onChange={(v) => onChange({ bodyWidth: v })}
+              step={1}
+              value={data.bodyWidth}
+              onChange={(e) => onChange({ bodyWidth: Number(e.target.value) })}
+              className="h-1.5 min-w-0 flex-1 cursor-pointer accent-neutral-900"
+              aria-label="본문 폭"
             />
-          </div>
-          {isMiddle && (
-            <div>
-              <span className="mb-1 block text-xs text-neutral-500">블록 위치</span>
-              <div className="grid grid-cols-2 rounded-md border border-neutral-300 bg-white p-0.5 text-sm">
-                {(['top', 'bottom'] as MiddleAlign[]).map((a) => (
-                  <button
-                    key={a}
-                    type="button"
-                    onClick={() => onAlignChange(a)}
-                    className={`rounded px-2 py-1 ${
-                      middleAlign === a ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
-                    }`}
-                  >
-                    {a === 'top' ? '위로' : '아래로'}
-                  </button>
-                ))}
-              </div>
+            <div className="w-[88px] shrink-0">
+              <NumberField
+                label="W"
+                value={data.bodyWidth}
+                min={LIMITS.bodyWidthMin}
+                max={LIMITS.bodyWidthMax}
+                onChange={(v) => onChange({ bodyWidth: v })}
+              />
             </div>
-          )}
+          </div>
         </div>
+
+        {isMiddle && (
+          <div>
+            <span className="mb-1 block text-xs text-neutral-500">블록 위치</span>
+            <div className="grid grid-cols-2 rounded-md border border-neutral-300 bg-white p-0.5 text-sm">
+              {(['top', 'bottom'] as MiddleAlign[]).map((a) => (
+                <button
+                  key={a}
+                  type="button"
+                  onClick={() => onAlignChange(a)}
+                  className={`rounded px-2 py-1 ${
+                    middleAlign === a ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
+                  }`}
+                >
+                  {a === 'top' ? '위로' : '아래로'}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div>
           <span className="mb-1 block text-xs text-neutral-500">이미지 (선택)</span>
