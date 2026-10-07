@@ -1,1 +1,45 @@
 @import "tailwindcss";
+@import "@fontsource/ibm-plex-mono/latin-500.css";
+
+/* Pretendard: 캔버스에 쓰는 Regular + 편집 UI용 SemiBold만 로드 (PNG 저장 시 폰트가 통째로 포함되므로 최소한으로) */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+  src: url('../node_modules/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  font-style: normal;
+  font-display: block;
+  src: url('../node_modules/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2');
+}
+
+@theme {
+  --font-sans: 'Pretendard', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: #111;
+  background: #e6e6e4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* number input 화살표 제거 */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
