@@ -47,8 +47,8 @@ export const MONTH_LABEL = {
 } as const
 
 export const BODY = {
-  fontSize: 25,
-  lineHeight: 45.5,
+  fontSize: 26,
+  lineHeight: 44,
   indent: 40,
   letterSpacing: -0.4,
   markerSize: 19,
